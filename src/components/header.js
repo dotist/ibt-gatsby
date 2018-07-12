@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import Link from 'gatsby-link'
 import styled from 'styled-components';
 import Img from 'gatsby-image'
@@ -6,17 +7,18 @@ import Img from 'gatsby-image'
 import logo from "../images/Black_pencil.svg";
 
 const HeaderWrapper = styled.div`
-  background-color: red;
-  marginBottom: 1.45rem;
+  margin-bottom: 1.45rem;
   overflow: hidden;
   position: relative;
-  height: 30vh;
+  height: ${({ isHome }) => (isHome ? '50vh' : '20vh')};
   > div {
     margin: 0 auto;
     max-width: 960px;
     padding: 1.45rem 1.0875rem;
     position: relative;
-    z-index: 2;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
     > a img {
       height: 80px;
       float: left;
@@ -24,71 +26,110 @@ const HeaderWrapper = styled.div`
     }
     nav {
       clear: both;
+    }
+  }
+`;
+
+const MainNav = styled.div`
+  ul {
+    list-style: none;
+    display: flex;
+    li {
+      margin-left: 10px;
+      font-family: sans-serif;
       a {
         color: white !important;
         text-decoration: none;
         padding: 0 10px 0 0
-        &:hover {
-          text-decoration: underline;
-        }
       }
-
-      ul {
-        li {
-          display: inline-block;
-        }
+      a:hover {
+        text-decoration: underline;
       }
     }
   }
 `;
 
+export default class Header extends Component {
+  componentDidUpdate = (prevProps, prevState) => {
+    const { location } = this.props;
+    if (location.pathname != prevProps.location.pathname) {
+      if (this.props.location.pathname == '/') {
+        this.wrapper.animate([
+          { height: "20vh" },
+          { height: "50vh" },
+        ], {
+          duration: 300,
+          fill: "forwards",
+          easing: "cubic-bezier(0.86, 0, 0.07, 1)",
+          iterations: 1,
+        })
+      }
+      else {
+        this.wrapper.animate([
+          { height: "50vh" },
+          { height: "20vh" },
+        ], {
+          duration: 300,
+          fill: "forwards",
+          easing: "cubic-bezier(0.86, 0, 0.07, 1)",
+          iterations: 1,
+        })
+      }
+    }
+  }
 
-const Header = ({ siteTitle, siteMeta, siteImageSizes }) => (
-  <HeaderWrapper>
-    <div>
-      <Link
-        to="/"
-        style={{
-          color: 'white',
-          textDecoration: 'none',
-        }}
+  render() {
+    const { data, location } = this.props;
+    return (
+      <HeaderWrapper
+        isHome={this.props.location.pathname == '/'}
+        ref={wrapper => (this.wrapper = ReactDOM.findDOMNode(wrapper))}
       >
-      <img src={logo} alt="IBT logo test" />
-      </Link>
-      <h1 style={{ margin: 0 }}>
-        <Link
-          to="/"
+        <div>
+          <Link
+            to="/"
+            style={{
+              color: 'white',
+              textDecoration: 'none',
+            }}
+          >
+          <img src={logo} alt="IBT logo test" />
+          </Link>
+          <h1 style={{ margin: 0 }}>
+            <Link
+              to="/"
+              style={{
+                color: 'white',
+                textDecoration: 'none',
+              }}
+            >
+              {this.props.siteTitle}
+            </Link>
+          </h1>
+          <h3>{this.props.siteMeta}</h3>
+          <MainNav>
+            <ul>
+              <li>
+                <Link to="/">Home</Link>
+              </li>
+              <li>
+                <Link to="/about">About</Link>
+              </li>
+            </ul>
+          </MainNav>
+        </div>
+        <Img
           style={{
-            color: 'white',
-            textDecoration: 'none',
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: '100%',
+            height: '100%',
           }}
-        >
-          {siteTitle}
-        </Link>
-      </h1>
-      <h3>{siteMeta}</h3>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/about">About</Link>
-          </li>
-        </ul>
-      </nav>
-    </div>
-    <Img
-      style={{
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
-      }}
-      sizes={siteImageSizes}
-    />
-  </HeaderWrapper>
-)
-export default Header
+          sizes={this.props.siteImageSizes}
+        />
+      </HeaderWrapper>
+    )
+  }
 
+}
