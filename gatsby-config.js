@@ -4,6 +4,7 @@ module.exports = {
     desc:  'Based in Berlin DE - IBT works in web-development. Building platforms over years in media design, digital strategies.',
     keywords: 'drupal, web-development, Isaac Bigsby Trogdon'
   },
+  pathPrefix: "/gatsby",
   plugins: [
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-styled-components',

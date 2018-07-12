@@ -37,13 +37,13 @@ const MainNav = styled.div`
     li {
       margin-left: 10px;
       font-family: sans-serif;
+      padding: 0 10px 0 0;
       a {
         color: white !important;
         text-decoration: none;
-        padding: 0 10px 0 0
-      }
-      a:hover {
-        text-decoration: underline;
+        &:hover {
+          border-bottom: 3px solid red;
+        }
       }
     }
   }
